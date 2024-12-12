@@ -154,39 +154,39 @@ Chaque entité est présentée avec ses attributs principaux, ce qui permet de m
    - `area_transportation` : Surface occupée.
    - `power_transportation` : Consommation énergétique.
 
-### Receip_Item
+### Recipe_Item
 - **Description** : Recettes de production d’items.
 - **Attributs** :
-   - `id_receip_item` : Identifiant unique.
+   - `id_recipe_item` : Identifiant unique.
    - `id_item` : Référence à l'item produit.
-   - `receip_name` : Nom de la recette.
-   - `is_alternate_receip` : Indique si la recette est alternative.
+   - `recipe_name` : Nom de la recette.
+   - `is_alternate_recipe` : Indique si la recette est alternative.
    - `ingredient_id_x`, `ingredient_size_x` : Ingrédients nécessaires (jusqu'à 4).
    - `building_id` : Référence au bâtiment d'application.
    - `building_time` : Temps nécessaire.
    - `prerequisite_x` : Conditions nécessaires (jusqu'à 3).
 
-### Receip_Building
+### Recipe_Building
 - **Description** : Recettes de construction des bâtiments.
 - **Attributs** :
-   - `id_receip_building` : Identifiant unique.
+   - `id_recipe_building` : Identifiant unique.
    - `ingredient_id_x`, `ingredient_size_x` : Ingrédients nécessaires (jusqu'à 6).
 
-### Receip_Transportation
+### Recipe_Transportation
 - **Description** : Recettes pour construire des moyens de transport.
 - **Attributs** :
-   - `id_transportation_receip` : Identifiant unique.
+   - `id_transportation_recipe` : Identifiant unique.
    - `ingredient_id_x`, `ingredient_size_x` : Ingrédients nécessaires (jusqu'à 5).
 
 ### Relations entre les entités
 - **Item ↔ Fuel** : Un item peut être associé à plusieurs carburants.
-- **Item ↔ Receip_Item** : Les items ont une ou plusieurs recettes.
-- **Item ↔ Receip_Building** : Les bâtiments sont construits grâce aux items.
-- **Item ↔ Receip_Transportation** : Les transports sont construits grâce aux items.
-- **Building ↔ Receip_Item** : Les bâtiments utilisent des recettes pour produire des items.
-- **Building ↔ Receip_Building** : Les bâtiments possèdent une recette.
+- **Item ↔ Recipe_Item** : Les items ont une ou plusieurs recettes.
+- **Item ↔ Recipe_Building** : Les bâtiments sont construits grâce aux items.
+- **Item ↔ Recipe_Transportation** : Les transports sont construits grâce aux items.
+- **Building ↔ Recipe_Item** : Les bâtiments utilisent des recettes pour produire des items.
+- **Building ↔ Recipe_Building** : Les bâtiments possèdent une recette.
 - **Building ↔ Fuel_Used** : Les bâtiments consomment du carburant.
-- **Transportation ↔ Receip_Transportation** : Les moyens de transport sont construits à l’aide de recettes.
+- **Transportation ↔ Recipe_Transportation** : Les moyens de transport sont construits à l’aide de recettes.
 - **Transportation ↔ Fuel_Used** : Les transports consomment du carburant.
 - **Fauna ↔ Damage** : La faune peut infliger des dégâts, enregistrés dans l'entité Damage.
 
