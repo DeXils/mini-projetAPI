@@ -1,0 +1,2984 @@
+openapi: 3.0.3
+info:
+  title: API Satisfactory
+  description: API sur le jeu Satisfactory (Base de donnée datant d'avant la sortie officiel du jeu)
+  contact:
+    email: angel.gioanni@etu.univ-grenoble-alpes.fr
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+tags:
+  - name: items
+    description: in game
+    externalDocs:
+      description: More infos ?
+      url: https://satisfactory.wiki.gg/wiki/Category:Items
+  - name: buildings
+    description: in game
+    externalDocs:
+      description: More infos ?
+      url: https://satisfactory.wiki.gg/wiki/Category:Buildings
+  - name: transportations
+    description: in game
+    externalDocs:
+      description: More infos ?
+      url: https://satisfactory.wiki.gg/wiki/Vehicles
+  - name: recipe_items
+    description: in game
+  - name: recipe_buildings
+    description: in game
+  - name: recipe_transportations
+    description: in game
+  - name: fuels
+    description: in game
+  - name: fuel_used
+    description: in game
+  - name: faunas
+    description: in game
+  - name: damages
+    description: in game
+paths:
+  /items:
+    post:
+      tags:
+        - items
+      summary: Create a new item
+      description: Create a new item
+      operationId: createItem
+      requestBody:
+        description: Create a new item
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemsPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ItemsPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ItemsPutPost'
+        required: true
+      responses:
+        '200':
+          description: Item Add Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200ItemPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200ItemPost'
+        '400':
+          description: Error No Body 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - items
+      summary: Update an item
+      description: Update an item by ID
+      operationId: updateItem
+      requestBody:
+        description: Update an item
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemsPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/ItemsPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ItemsPutPost'
+        required: true
+      responses:
+        '200':
+          description: Item Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200ItemPut'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200ItemPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Item Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Item'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Item'
+    get:
+      tags:
+        - items
+      summary: Get all item
+      description: Get all item
+      operationId: getItems
+      responses:
+        '200':
+          description: Item Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Items'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Items'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /items/{itemId}:
+    get:
+      tags:
+        - items
+      summary: Find item by ID
+      description: Returns an item
+      operationId: getItemById
+      parameters:
+        - name: itemId
+          in: path
+          description: ID of item to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemsPutPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ItemsPutPost'
+        '409':
+          description: Error Item Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Item'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Item'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - items
+      summary: Deletes an item and dependecies
+      description: delete an item and dependecies
+      operationId: deleteItem
+      parameters:
+        - name: itemId
+          in: path
+          description: Item id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200ItemDelete'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200ItemDelete'
+        '409':
+          description: Error Item Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Item'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Item'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /buildings:
+    post:
+      tags:
+        - buildings
+      summary: Create a new building
+      description: Create a new building
+      operationId: createBuilding
+      requestBody:
+        description: Create a new building
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingsPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BuildingsPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BuildingsPutPost'
+        required: true
+      responses:
+        '200':
+          description: Building Add Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200BuildingPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200BuildingPost'
+        '400':
+          description: Error No Body 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - buildings
+      summary: Update an building
+      description: Update an building by ID
+      operationId: updateBuilding
+      requestBody:
+        description: Update an building
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingsPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/BuildingsPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BuildingsPutPost'
+        required: true
+      responses:
+        '200':
+          description: Building Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200BuildingPut'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200BuildingPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Building Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Building'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Building'
+    get:
+      tags:
+        - buildings
+      summary: Get all building
+      description: Get all building
+      operationId: getBuildings
+      responses:
+        '200':
+          description: Building Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Buildings'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Buildings'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /buildings/{buildingId}:
+    get:
+      tags:
+        - buildings
+      summary: Find building by ID
+      description: Returns an building
+      operationId: getBuildingById
+      parameters:
+        - name: buildingId
+          in: path
+          description: ID of building to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Building
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemsPutPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ItemsPutPost'
+        '409':
+          description: Error Building Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Building'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Building'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - buildings
+      summary: Deletes an buildings and dependecies
+      description: delete an buildings and dependecies
+      operationId: deleteBuilding
+      parameters:
+        - name: buildingId
+          in: path
+          description: Buildings id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Building
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200BuildingDelete'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200BuildingDelete'
+        '409':
+          description: Error Building Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Item'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Item'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /transportations:
+    post:
+      tags:
+        - transportations
+      summary: Create a new transportation
+      description: Create a new transportation
+      operationId: createTransportation
+      requestBody:
+        description: Create a new transportation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransportationsPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/TransportationsPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransportationsPutPost'
+        required: true
+      responses:
+        '200':
+          description: Transportation Add Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200TransportationPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200TransportationPost'
+        '400':
+          description: Error No Body 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - transportations
+      summary: Update an transportation
+      description: Update an transportation by ID
+      operationId: updateTransportation
+      requestBody:
+        description: Update an transportation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransportationsPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/TransportationsPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransportationsPutPost'
+        required: true
+      responses:
+        '200':
+          description: Transportation Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200TransportationPut'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200TransportationPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Transportation Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Transportation'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Transportation'
+    get:
+      tags:
+        - transportations
+      summary: Get all transportation
+      description: Get all transportation
+      operationId: getTransportation
+      responses:
+        '200':
+          description: Transportation Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Buildings'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Buildings'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /transportations/{transportationId}:
+    get:
+      tags:
+        - transportations
+      summary: Find transportation by ID
+      description: Returns an transportation
+      operationId: getTransportationById
+      parameters:
+        - name: transportationId
+          in: path
+          description: ID of transportation to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Transportation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransportationsPutPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TransportationsPutPost'
+        '409':
+          description: Error Transportation Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Transportation'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Transportation'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - transportations
+      summary: Deletes an transportations and dependecies
+      description: delete an transportations and dependecies
+      operationId: deleteTransportation
+      parameters:
+        - name: transportationId
+          in: path
+          description: TransportationId id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Building
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200TransportationDelete'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200TransportationDelete'
+        '409':
+          description: Error Building Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Transportation'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Transportation'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /recipe_items:
+    post:
+      tags:
+        - recipe_items
+      summary: Create a new recipe item
+      description: Create a new recipe item
+      operationId: createRecipeItem
+      requestBody:
+        description: Create a new recipe item
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeItemPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/RecipeItemPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecipeItemPutPost'
+        required: true
+      responses:
+        '200':
+          description: Recipe Item Add Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeItemPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeItemPost'
+        '400':
+          description: Error No Body 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - recipe_items
+      summary: Update a recipe item
+      description: Update a recipe item by ID
+      operationId: updateRecipeItem
+      requestBody:
+        description: Update a recipe item
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeItemPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/RecipeItemPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecipeItemPutPost'
+        required: true
+      responses:
+        '200':
+          description: Recipe Item Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeItemPut'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeItemPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Recipe Item Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeItem'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeItem'
+    get:
+      tags:
+        - recipe_items
+      summary: Get all recipe items
+      description: Get all recipe items
+      operationId: getRecipeItems
+      responses:
+        '200':
+          description: Recipe Items Retrieved Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeItem'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/RecipeItem'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /recipe_items/{recipeItemId}:
+    get:
+      tags:
+        - recipe_items
+      summary: Find recipe item by ID
+      description: Returns a recipe item
+      operationId: getRecipeItemById
+      parameters:
+        - name: recipeItemId
+          in: path
+          description: ID of recipe item to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Recipe Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeItemPutPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/RecipeItemPutPost'
+        '409':
+          description: Error Recipe Item Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeItem'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeItem'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - recipe_items
+      summary: Deletes a recipe item and dependencies
+      description: Delete a recipe item and dependencies
+      operationId: deleteRecipeItem
+      parameters:
+        - name: recipeItemId
+          in: path
+          description: Recipe item ID to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Recipe Item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeItemDelete'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeItemDelete'
+        '409':
+          description: Error Recipe Item Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeItem'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeItem'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /recipe_buildings:
+    post:
+      tags:
+        - recipe_buildings
+      summary: Create a new recipe building
+      description: Create a new recipe building
+      operationId: createRecipeBuilding
+      requestBody:
+        description: Create a new recipe building
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeBuildingPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/RecipeBuildingPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecipeBuildingPutPost'
+        required: true
+      responses:
+        '200':
+          description: Recipe Building Add Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeBuildingPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeBuildingPost'
+        '400':
+          description: Error No Body 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - recipe_buildings
+      summary: Update a recipe building
+      description: Update a recipe building by ID
+      operationId: updateRecipeBuilding
+      requestBody:
+        description: Update a recipe building
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeBuildingPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/RecipeBuildingPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecipeBuildingPutPost'
+        required: true
+      responses:
+        '200':
+          description: Recipe Building Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeBuildingPut'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeBuildingPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Recipe Building Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeBuilding'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeBuilding'
+    get:
+      tags:
+        - recipe_buildings
+      summary: Get all recipe buildings
+      description: Get all recipe buildings
+      operationId: getRecipeBuilding
+      responses:
+        '200':
+          description: Recipe Buildings Retrieved Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeBuilding'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/RecipeBuilding'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /recipe_buildings/{recipeBuildingId}:
+    get:
+      tags:
+        - recipe_buildings
+      summary: Find recipe building by ID
+      description: Returns a recipe building
+      operationId: getRecipeBuildingById
+      parameters:
+        - name: recipeBuildingId
+          in: path
+          description: ID of recipe building to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Recipe Building
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeBuildingPutPost'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/RecipeBuildingPutPost'
+        '409':
+          description: Error Recipe Building Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeBuilding'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeBuilding'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - recipe_buildings
+      summary: Deletes a recipe building and dependencies
+      description: Delete a recipe building and dependencies
+      operationId: deleteRecipeBuilding
+      parameters:
+        - name: recipeBuildingId
+          in: path
+          description: Recipe building ID to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Recipe Building
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeBuildingDelete'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeBuildingDelete'
+        '409':
+          description: Error Recipe Building Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeBuilding'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeBuilding'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /recipe_transportations:
+    post:
+      tags:
+        - recipe_transportations
+      summary: Create a new recipe transportation
+      description: Create a new recipe transportation
+      operationId: createRecipeTransportation
+      requestBody:
+        description: Create a new recipe transportation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeTransportationPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/RecipeTransportationPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecipeTransportationPutPost'
+        required: true
+      responses:
+        '200':
+          description: Recipe Transportation Add Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeTransportationPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeTransportationPost'
+        '400':
+          description: Error No Body 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - recipe_transportations
+      summary: Update a recipe transportation
+      description: Update a recipe transportation by ID
+      operationId: updateRecipeTransportation
+      requestBody:
+        description: Update a recipe transportation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeTransportationPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/RecipeTransportationPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecipeTransportationPutPost'
+        required: true
+      responses:
+        '200':
+          description: Recipe Transportation Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeTransportationPut'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeTransportationPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Recipe Transportation Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeTransportation'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeTransportation'
+    get:
+      tags:
+        - recipe_transportations
+      summary: Get all recipe transportations
+      description: Get all recipe transportations
+      operationId: getRecipeTransportation
+      responses:
+        '200':
+          description: Recipe Transportations Retrieved Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeTransportation'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/RecipeTransportation'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /recipe_transportations/{recipeTransportationId}:
+    get:
+      tags:
+        - recipe_transportations
+      summary: Find recipe transportation by ID
+      description: Returns a recipe transportation
+      operationId: getRecipeTransportationById
+      parameters:
+        - name: recipeTransportationId
+          in: path
+          description: ID of recipe transportation to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Recipe Transportation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeTransportationPutPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/RecipeTransportationPutPost'
+        '409':
+          description: Error Recipe Transportation Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeTransportation'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeTransportation'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - recipe_transportations
+      summary: Deletes a recipe transportation and dependencies
+      description: Delete a recipe transportation and dependencies
+      operationId: deleteRecipeTransportation
+      parameters:
+        - name: recipeTransportationId
+          in: path
+          description: Recipe transportation ID to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Recipe Transportation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeTransportationDelete'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200RecipeTransportationDelete'
+        '409':
+          description: Error Recipe Transportation Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeTransportation'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409RecipeTransportation'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /fuels:
+    post:
+      tags:
+        - fuels
+      summary: Create a new fuel
+      description: Create a new fuel
+      operationId: createFuel
+      requestBody:
+        description: Create a new fuel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FuelPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FuelPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FuelPutPost'
+        required: true
+      responses:
+        '200':
+          description: Fuel Add Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FuelPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FuelPost'
+        '400':
+          description: Error No Body 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - fuels
+      summary: Update a fuel
+      description: Update a fuel by ID
+      operationId: updateFuel
+      requestBody:
+        description: Update a fuel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FuelPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FuelPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FuelPutPost'
+        required: true
+      responses:
+        '200':
+          description: Fuel Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FuelPut'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FuelPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Fuel Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Fuel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Fuel'
+    get:
+      tags:
+        - fuels
+      summary: Get all fuels
+      description: Get all fuels
+      operationId: getFuel
+      responses:
+        '200':
+          description: Fuels Retrieved Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fuel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Fuel'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /fuels/{fuelId}:
+    get:
+      tags:
+        - fuels
+      summary: Find fuel by ID
+      description: Returns a fuel
+      operationId: getFuelById
+      parameters:
+        - name: fuelId
+          in: path
+          description: ID of fuel to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Fuel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FuelPutPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FuelPutPost'
+        '409':
+          description: Error Fuel Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Fuel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Fuel'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - fuels
+      summary: Deletes a fuel and dependencies
+      description: Delete a fuel and dependencies
+      operationId: deleteFuel
+      parameters:
+        - name: fuelId
+          in: path
+          description: Fuel ID to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Fuel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FuelDelete'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FuelDelete'
+        '409':
+          description: Error Fuel Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Fuel'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Fuel'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /fuel_used:
+    post:
+      tags:
+        - fuel_used
+      summary: Create a new fuel used
+      description: Create a new fuel used
+      operationId: createFuelUsed
+      requestBody:
+        description: Create a new fuel used
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FuelUsedPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FuelUsedPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FuelUsedPutPost'
+        required: true
+      responses:
+        '200':
+          description: Fuel Used Added Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FuelUsedPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FuelUsedPost'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - fuel_used
+      summary: Update a fuel used
+      description: Update a fuel used by ID
+      operationId: updateFuelUsed
+      requestBody:
+        description: Update a fuel used
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FuelUsedPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FuelUsedPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FuelUsedPutPost'
+        required: true
+      responses:
+        '200':
+          description: Fuel Used Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FuelUsedPut'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FuelUsedPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Fuel Used Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409FuelUsed'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409FuelUsed'
+    get:
+      tags:
+        - fuel_used
+      summary: Get all fuel used
+      description: Get all fuel used
+      operationId: getFuelUsed
+      responses:
+        '200':
+          description: Fuel Used Retrieved Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FuelUsed'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FuelUsed'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /fuel_used/{fuelUsedId}:
+    get:
+      tags:
+        - fuel_used
+      summary: Find fuel used by ID
+      description: Returns a fuel used
+      operationId: getFuelUsedById
+      parameters:
+        - name: fuelUsedId
+          in: path
+          description: ID of fuel used to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Fuel Used
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FuelUsedPutPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FuelUsedPutPost'
+        '409':
+          description: Error Fuel Used Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409FuelUsed'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409FuelUsed'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - fuel_used
+      summary: Deletes a fuel used and dependencies
+      description: Delete a fuel used and dependencies
+      operationId: deleteFuelUsed
+      parameters:
+        - name: fuelUsedId
+          in: path
+          description: Fuel used ID to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Fuel Used
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FuelUsedDelete'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FuelUsedDelete'
+        '409':
+          description: Error Fuel Used Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409FuelUsed'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409FuelUsed'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /faunas:
+    post:
+      tags:
+        - faunas
+      summary: Create a new fauna
+      description: Create a new fauna
+      operationId: createFauna
+      requestBody:
+        description: Create a new fauna
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaunaPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FaunaPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FaunaPutPost'
+        required: true
+      responses:
+        '200':
+          description: Fauna Added Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FaunaPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FaunaPost'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - faunas
+      summary: Update a fauna
+      description: Update a fauna by ID
+      operationId: updateFauna
+      requestBody:
+        description: Update a fauna
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaunaPutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/FaunaPutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FaunaPutPost'
+        required: true
+      responses:
+        '200':
+          description: Fauna Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FaunaPut'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FaunaPut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Fauna Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Fauna'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Fauna'
+    get:
+      tags:
+        - faunas
+      summary: Get all faunas
+      description: Get all faunas
+      operationId: getFaunas
+      responses:
+        '200':
+          description: Faunas Retrieved Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fauna'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Fauna'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /faunas/{faunaId}:
+    get:
+      tags:
+        - faunas
+      summary: Find fauna by ID
+      description: Returns a fauna
+      operationId: getFaunaById
+      parameters:
+        - name: faunaId
+          in: path
+          description: ID of fauna to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Fauna
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaunaPutPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/FaunaPutPost'
+        '409':
+          description: Error Fauna Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Fauna'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Fauna'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - faunas
+      summary: Deletes a fauna and dependencies
+      description: Delete a fauna and dependencies
+      operationId: deleteFauna
+      parameters:
+        - name: faunaId
+          in: path
+          description: Fauna ID to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Fauna
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200FaunaDelete'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200FaunaDelete'
+        '409':
+          description: Error Fauna Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Fauna'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Fauna'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+  /damages:
+    post:
+      tags:
+        - damages
+      summary: Create a new damage
+      description: Create a new damage
+      operationId: createDamage
+      requestBody:
+        description: Create a new damage
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DamagePutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DamagePutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DamagePutPost'
+        required: true
+      responses:
+        '200':
+          description: Damage Added Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200DamagePost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200DamagePost'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error ID Already Exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409IdAlreadyExist'
+    put:
+      tags:
+        - damages
+      summary: Update a damage
+      description: Update a damage by ID
+      operationId: updateDamage
+      requestBody:
+        description: Update a damage
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DamagePutPost'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DamagePutPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DamagePutPost'
+        required: true
+      responses:
+        '200':
+          description: Damage Updated Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200DamagePut'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200DamagePut'
+        '400':
+          description: Error No Body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code400Body'
+        '409':
+          description: Error Damage Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Damage'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Damage'
+    get:
+      tags:
+        - damages
+      summary: Get all damages
+      description: Get all damages
+      operationId: getDamages
+      responses:
+        '200':
+          description: Damages Retrieved Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Damage'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Damage'
+        '500':
+          description: Error Server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code500'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code500'
+  /damages/{damageId}:
+    get:
+      tags:
+        - damages
+      summary: Find damage by ID
+      description: Returns a damage
+      operationId: getDamageById
+      parameters:
+        - name: damageId
+          in: path
+          description: ID of damage to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Damage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DamagePutPost'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DamagePutPost'
+        '409':
+          description: Error Damage Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Damage'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Damage'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+    delete:
+      tags:
+        - damages
+      summary: Deletes a damage and dependencies
+      description: Delete a damage and dependencies
+      operationId: deleteDamage
+      parameters:
+        - name: damageId
+          in: path
+          description: Damage ID to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Damage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code200DamageDelete'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code200DamageDelete'
+        '409':
+          description: Error Damage Not Present
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code409Damage'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code409Damage'
+        '422':
+          description: Error ID Must Be A Positive Valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Code422'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Code422'
+
+components:
+  schemas:
+    Code500:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Server
+    Code422:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error ID Must Be A Positive Valid
+    Code200ItemPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Item Updated Successfully
+    Code200BuildingPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Building Updated Successfully
+    Code200TransportationPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Transportation Updated Successfully
+    Code200RecipeItemPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Item Updated Successfully
+    Code200RecipeBuildingPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Building Updated Successfully
+    Code200RecipeTransportationPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Transportation Updated Successfully
+    Code200FuelPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fuel Updated Successfully
+    Code200FuelUsedPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fuel Used Updated Successfully
+    Code200FaunaPut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fauna Updated Successfully
+    Code200DamagePut:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Damage Updated Successfully
+    Code200ItemPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Item Add Successfully
+    Code200BuildingPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Building Add Successfully
+    Code200TransportationPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Transportation Add Successfully
+    Code200RecipeBuildingPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Building Add Successfully
+    Code200RecipeItemPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Item Add Successfully
+    Code200RecipeTransportationPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Transportation Add Successfully
+    Code200FuelPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fuel Add Successfully
+    Code200FuelUsedPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fuel Used Add Successfully
+    Code200FaunaPost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fauna Add Successfully
+    Code200DamagePost:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Damage Add Successfully
+    Code200ItemDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Item And Dependencies Deleted Successfully
+    Code200BuildingDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Building And Dependencies Deleted Successfully
+    Code200TransportationDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Transportation And Dependencies Deleted Successfully
+    Code200RecipeBuildingDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Building And Dependencies Deleted Successfully
+    Code200RecipeTransportationDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Transportation And Dependencies Deleted Successfully
+    Code200FuelDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fuel And Dependencies Deleted Successfully
+    Code200FuelUsedDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fuel Used And Dependencies Deleted Successfully
+    Code200FaunaDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Fauna And Dependencies Deleted Successfully
+    Code200DamageDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Damage And Dependencies Deleted Successfull
+    Code400Body:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error No Body
+    Code409Item:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Item Not Present
+    Code409Building:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Building Not Present
+    Code409Transportation:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Transportation Not Present
+    Code409IdAlreadyExist:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error ID Already Exists
+    Code200RecipeItemDelete:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: true
+        message: 
+          type: string
+          example: Recipe Item And Dependencies Deleted Successfully
+    Code409RecipeItem:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Recipe Item Not Present
+    Code409RecipeBuilding:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Recipe Building Not Present
+    Code409RecipeTransportation:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Recipe Transportation Not Present
+    Code409Fuel:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Fuel Not Present
+    Code409FuelUsed:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Fuel Used Not Present
+    Code409Fauna:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Fauna Not Present
+    Code409Damage:
+      type: object
+      properties:
+        success: 
+          type: boolean
+          example: false
+        message: 
+          type: string
+          example: Error Damage Not Present
+    ItemsPutPost:
+      type: object
+      properties:
+        id_item: 
+          type: integer
+          format: int64
+          example: 1
+        name_item: 
+          type: string
+          example: Azote
+        description:
+          type: string
+          example: L'Azote peut être utilisé de différentes manières, telles que la métallurgie, le refroidissement et la production d'acide nitrique. Sur Massage-2(AB)b, il peut être extrait de puits de gaz souterrains.
+        category_item: 
+          type: string
+          example: Fluide
+        unlock_item:
+          type: string
+          example: Palier 8 - Production d'aluminium avancée
+        stack_item:
+          type: integer
+          format: int64
+          example: 50
+        ressources_point_item:
+          type: integer
+          format: int64
+          example: 0
+    Items:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        items: 
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemsPutPost'
+    BuildingsPutPost:
+      type: object
+      properties:
+        id_building:
+          type: integer
+          format: int64
+          example: 1
+        name_building:
+          type: string
+          example: Le HUB
+        description_building: 
+          type: string
+          example: Le cœur de votre usine. C'est ici que vous complétez les étapes importantes des tiers FICSIT pour débloquer des plans supplémentaires de bâtiments, véhicules, pièces, équipements, etc.
+        category_building:
+          type: string
+          example: Spcial
+        unlock_building:
+          type: string
+          example: Départ
+        width_building:
+          type: integer
+          format: int64
+          example: 14
+        heigth_building:
+          type: integer
+          format: int64
+          example: 26
+        length_building:
+          type: integer
+          format: int64
+          example: 28
+        area_building:
+          type: integer
+          format: int64
+          example: 364
+        power_building:
+          type: integer
+          format: int64
+          example: 0
+    Buildings:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/BuildingsPutPost'    
+    TransportationsPutPost:
+      type: object
+      properties:
+        id_transportation:
+          type: integer
+          format: int64
+          example: 1
+        name_transportation:
+          type: string
+          example: Gare routière
+        description_transportation: 
+          type: string
+          example: Envoyez ou recevez des ressources aux véhicules. A un inventaire avec 48 emplacements. Transfère jusqu'à 120 piles par minute vers/depuis les véhicules amarrés. Toujours ravitailler les véhicules s'il a accès à un type correspondant
+        category_transportation:
+          type: string
+          example: Transport routier
+        unlock_transportation:
+          type: string
+          example: Palier 3 - Transport motorisé
+        width_transportation:
+          type: integer
+          format: int64
+          example: 16
+        heigth_transportation:
+          type: integer
+          format: int64
+          example: 22
+        length_transportation:
+          type: integer
+          format: int64
+          example: 12
+        area_transportation:
+          type: integer
+          format: int64
+          example: 352
+        power_transportation:
+          type: integer
+          format: int64
+          example: 20
+    Transportations:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/TransportationsPutPost'    
+    RecipeItemPutPost:
+      type: object
+      properties:
+        id_recipe_item:
+          type: integer
+          format: int64
+          example: 1
+        id_item:
+          type: integer
+          format: int64
+          example: 1
+        recipe_name: 
+          type: string 
+          example: Azote
+        is_alternate_recipe: 
+          type: boolean
+          example: false
+        ingredient_id_1:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_1:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_2:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_2:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_3:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_3:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_4:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_4:
+          type: integer
+          format: int64
+          example: null
+        building_id:
+          type: integer
+          format: int64
+          example: 22
+        building_time:
+          type: number
+          format: float
+          example: 0.5
+        product_id_1:
+          type: integer
+          format: int64
+          example: 1
+        product_size_1:
+          type: integer
+          format: int64
+          example: 1
+        product_id_2:
+          type: integer
+          format: int64
+          example: null
+        product_size_2:
+          type: integer
+          format: int64
+          example: null
+        prerequisite_1:
+          type: string
+          example: Palier 8 - Production d'aluminium avancée
+        prerequisite_2:
+          type: string
+          example: null
+        prerequisite_3:
+          type: string
+          example: null
+    RecipeItem:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/RecipeItemPutPost'
+    RecipeBuildingPutPost:
+      type: object
+      properties:
+        id_recipe_building:
+          type: integer
+          format: int64
+          example: 1
+        ingredient_id_1:
+          type: integer
+          format: int64
+          example: 35
+        ingredient_size_1:
+          type: integer
+          format: int64
+          example: 1
+        ingredient_id_2:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_2:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_3:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_3:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_4:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_4:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_5:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_5:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_6:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_6:
+          type: integer
+          format: int64
+          example: null
+    RecipeBuilding:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/RecipeBuildingPutPost'
+    RecipeTransportationPutPost:
+      type: object
+      properties:
+        id_recipe_building:
+          type: integer
+          format: int64
+          example: 1
+        ingredient_id_1:
+          type: integer
+          format: int64
+          example: 35
+        ingredient_size_1:
+          type: integer
+          format: int64
+          example: 1
+        ingredient_id_2:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_2:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_3:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_3:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_4:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_4:
+          type: integer
+          format: int64
+          example: null
+        ingredient_id_5:
+          type: integer
+          format: int64
+          example: null
+        ingredient_size_5:
+          type: integer
+          format: int64
+          example: null
+    RecipeTransportation:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/RecipeTransportationPutPost'
+    FuelPutPost:
+      type: object
+      properties:
+        id_fuel:
+          type: integer
+          format: int64
+          example: 1
+        id_item:
+          type: integer
+          format: int64
+          example: 17
+        energy:
+          type: integer
+          format: int64
+          example: 250
+        stack_energy:
+          type: integer
+          format: int64
+          example: 12500
+    Fuel:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/FuelPutPost'
+    FuelUsedPutPost:
+      type: object
+      properties:
+        id_fuel_used:
+          type: integer
+          format: int64
+          example: 1
+        id_fuel:
+          type: integer
+          format: int64
+          example: 1
+        time_used:
+          type: number
+          format: float
+          example: 8.333
+        id_building:
+          type: integer
+          format: int64
+          example: 25
+        id_transportation:
+          type: integer
+          format: int64
+          example: null
+        id_item:
+          type: integer
+          format: int64
+          example: null
+    FuelUsed:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/FuelUsedPutPost'
+    FaunaPutPost:
+      type: object 
+      properties: 
+        id_fauna:
+          type: integer
+          format: int64
+          example: 1
+        name_fauna: 
+          type: string
+          example: Lézard doggo
+        description_fauna: 
+          type: string
+          example: Le lézard doggo est un petit chien reptilien de couleur rouge, à la hauteur des genoux d'un ingénieur.
+        life_point_fauna:
+          type: integer
+          format: int64
+          example: 15
+        damage_fauna_id:
+          type: integer
+          format: int64
+          example: null
+        behavior_fauna: 
+          type: string
+          example: Amical (apprivoisable)
+        loot_fauna_id:
+          type: integer
+          format: int64
+          example: null
+        loot_fauna_size:
+          type: integer
+          format: int64
+          example: null    
+    Fauna:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/FaunaPutPost'
+    DamagePutPost:
+      type: object
+      properties:
+        id_damage:
+          type: integer
+          format: int64
+          example: 1
+        name_damage_1: 
+          type: string
+          example: Charge
+        point_damage_1:
+          type: integer
+          format: int64
+          example: 10
+        name_damage_2: 
+          type: string
+          example: Charge
+        point_damage_2:
+          type: integer
+          format: int64
+          example: 10
+        name_damage_3: 
+          type: string
+          example: Charge
+        point_damage_3:
+          type: integer
+          format: int64
+          example: 10
+    Damage:
+      type: object
+      properties: 
+        success:
+          type: boolean
+          example: true
+        buildings:
+          type: array
+          items: 
+            $ref: '#/components/schemas/DamagePutPost'
